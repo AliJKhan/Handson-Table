@@ -23,6 +23,8 @@ services:
             MYSQL_PASSWORD: secret
         ports:
             - 3309:3309
+        volumes:
+            - mysql_data:/var/lib/mysql # named volume for MySQL data
 
     phpmyadmin:
         container_name: phpmyadmin
@@ -47,3 +49,6 @@ services:
         depends_on:
             - laravel
         command: npm run dev # run the project to live
+
+volumes:
+    mysql_data:
