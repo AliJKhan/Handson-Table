@@ -11,6 +11,9 @@ up:
 down: 
 	docker-compose down
 
+down-all:
+	docker-compose down --rmi all -v
+
 stop:
 	docker-compose stop
 
