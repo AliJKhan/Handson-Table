@@ -14,7 +14,7 @@ class HandsonController extends Controller
     public function load(): JsonResponse
     {
 
-        return response()->json(['data' => Handson::find(1)->data]);
+        return response()->json(['data' => Handson::first()->data]);
     }
 
     /**
@@ -22,7 +22,7 @@ class HandsonController extends Controller
      */
     public function save(Request $request): JsonResponse
     {
-        if ($handson = Handson::find(1)) {
+        if ($handson = Handson::first()) {
             $handson->data = json_encode($request->body);
             $handson->save();
         }
