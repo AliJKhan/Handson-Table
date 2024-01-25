@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Handson extends Model
+class Handsone extends Model
 {
     /**
      * The table associated with the model.

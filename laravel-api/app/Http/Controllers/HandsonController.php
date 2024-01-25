@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Handson;
+use App\Models\Handsone;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -13,24 +13,27 @@ class HandsonController extends Controller
      */
     public function load(): JsonResponse
     {
-
-        return response()->json(['data' => Handson::first()->data]);
+        return response()->json(['data' => Handsone::first()->data]);
     }
 
     /**
-     * save the data for handson table
+     * save the data for handsone table
      */
     public function save(Request $request): JsonResponse
     {
-        if ($handson = Handson::first()) {
+        $request->validate([
+            'body' => ['required'],
+        ]);
+
+        if ($handson = Handsone::first()) {
             $handson->data = json_encode($request->body);
             $handson->save();
         }
         else{
-            $handson = new Handson();
+            $handson = new Handsone();
             $handson->data = json_encode($request->body);
             $handson->save();
         }
-        return response()->json(['done' => 'yes']);
+        return response()->json(['success']);
     }
 }
