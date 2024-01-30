@@ -3,4 +3,4 @@ Run the following commands:
 2. docker exec laravel-api php artisan migrate
 
 Run the tests via:
-1. docker exec laravel-api php artisan migrate
+1. docker exec laravel-api php artisan test
