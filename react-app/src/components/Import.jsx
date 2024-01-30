@@ -6,7 +6,8 @@ import Input from "../style components/Input.jsx";
 function UploadFile() {
     const [file, setFile] = useState(null);
     const [jsonData, setJsonData] = useState([]);
-
+    const [fomrulaData, setFomrulaData] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     return (
         <div>
             <div className='heading'>
@@ -17,9 +18,10 @@ function UploadFile() {
                 accept=".xls,.xlsx"
                 onChange={(e) => setFile(e.target.files[0])}
             />
-            <Button color="#BF4F74" margin="0px" onClick={() => handleConvert(file, setJsonData)}>Upload</Button>
+            <Button color="#BF4F74" margin="0px" onClick={() => handleConvert(file, setJsonData, setFomrulaData, setIsLoading)}>Upload</Button>
+            {isLoading ? <div>Please wait...loading...</div> : ''}
             <div className='table'>
-                <Table data={jsonData} setData={setJsonData}></Table>
+                <Table data={jsonData} setData={setJsonData} formulaData={fomrulaData} setIsLoading={setIsLoading}></Table>
             </div>
 
 

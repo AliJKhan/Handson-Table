@@ -5,10 +5,9 @@ import { HotTable } from '@handsontable/react';
 import {  textRenderer } from 'handsontable/renderers';
 import  { useState, useRef, useEffect } from "react";
 import Button from "../style components/Button.jsx";
-import {fetchData, getReadOnly, saveData} from "../libraries/DataLibrary.js";
+import {fetchData, getReadOnly, saveData, formulaAdapter} from "../libraries/DataLibrary.js";
 import Input from "../style components/Input.jsx";
-
-export default function Table({setData, data}) {
+export default function Table({setData, data, formulaData, setIsLoading}) {
     const hyperformulaInstance = HyperFormula.buildEmpty({
         licenseKey: 'internal-use-in-handsontable',
     });
@@ -26,15 +25,22 @@ export default function Table({setData, data}) {
         }
     }
 
+
     const getButtonClickCallback = (event) => {
         const hot = hotRef.current.hotInstance;
         const selected = hot.getSelected() || [];
         hot.setDataAtCell(selected[0][0], selected[0][1], formula);
     };
 
+
     useEffect(() => {
-        fetchData(setData);
+        fetchData().then(res => {
+            setData(JSON.parse(res.data));
+        });
     },[]);
+    useEffect(() => {
+        formulaAdapter(formulaData, hotRef.current.hotInstance, setIsLoading);
+    },[data]);
 
     return (
         <>
@@ -57,6 +63,7 @@ export default function Table({setData, data}) {
                 rowHeaders={true}
                 autoWrapRow={true}
                 autoWrapCol={true}
+
                 licenseKey="non-commercial-and-evaluation"
                 trimWhitespace={false}
                 formulas={{

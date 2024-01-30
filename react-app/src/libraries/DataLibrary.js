@@ -1,8 +1,10 @@
 import * as XLSX from "xlsx";
 import ApiRequest from "./ApiRequest.js";
-const handleConvert = (file, setJsonData) => {
+
+const handleConvert = (file, setJsonData, setFomrulaData, setIsLoading) => {
     if (file) {
         const reader = new FileReader();
+        setIsLoading(true);
         reader.readAsBinaryString(file);
         reader.onload = (e) => {
             const data = e.target.result;
@@ -10,12 +12,16 @@ const handleConvert = (file, setJsonData) => {
             const sheetName = workbook.SheetNames[0];
             let rowObject = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName],{header: 1,defval: ""})
             setJsonData(rowObject);
+
+            let formulae = XLSX.utils.sheet_to_formulae(workbook.Sheets[sheetName]);
+            setFomrulaData(formulae);
+
         };
+
     }else{
         return [];
     }
 };
-
 const fetchData = async (setJsonData) => {
     try {
         const getOptions = {
@@ -25,8 +31,7 @@ const fetchData = async (setJsonData) => {
             },
         }
         const response =  await ApiRequest('http://localhost:8000/api/load', getOptions)
-        const items = await response.json();
-        setJsonData(JSON.parse(items.data));
+        return  await response.json();
     }catch (err){
     }
 }
@@ -72,4 +77,20 @@ function getReadOnly(data){
     }
     return [readOnlyRows, readOnlyCols];
 }
-export {handleConvert, fetchData, saveData,getReadOnly}
+
+const formulaAdapter= async (formulaData, tableInstance, setIsLoading) =>{
+    for (let i = 0; i < formulaData.length; i++){
+        if ((formulaData[i]).split("=")[1].includes("(")) {
+            if (((formulaData[i].split("=")[0]).split("")).length <= 2) {
+                let formula = "=".concat((formulaData[i]).split("=")[1]);
+                tableInstance.setDataAtCell(((formulaData[i].split("=")[0]).split("")[1]-1),(formulaData[i].split("=")[0]).split("")[0].toLowerCase().charCodeAt(0) - 97  , formula);
+
+            }else{
+                let formula = "=".concat((formulaData[i]).split("=")[1]);
+                tableInstance.setDataAtCell((parseInt((formulaData[i]).split("=")[0].split("")[1]+(formulaData[i]).split("=")[0].split("")[2])-1),(formulaData[i].split("=")[0]).split("")[0].toLowerCase().charCodeAt(0) - 97, formula);
+            }
+        }
+    }
+    setIsLoading(false);
+}
+export {handleConvert, fetchData, saveData, getReadOnly, formulaAdapter}
