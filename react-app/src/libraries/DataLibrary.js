@@ -30,7 +30,7 @@ const fetchData = async (setJsonData) => {
                 'Content-Type':'application/json'
             },
         }
-        const response =  await ApiRequest('http://localhost:8000/api/load', getOptions)
+        const response =  await ApiRequest('http://165.227.97.46/api/load', getOptions)
         return  await response.json();
     }catch (err){
     }
@@ -48,7 +48,7 @@ const saveData = async (hotRef) => {
             body: JSON.stringify(body),
 
         }
-        const response =  await ApiRequest('http://localhost:8000/api/save', postOptions)
+        const response =  await ApiRequest('http://165.227.97.46/api/save', postOptions)
     }catch (err){
     }
 }
